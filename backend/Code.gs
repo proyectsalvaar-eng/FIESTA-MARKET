@@ -2,6 +2,7 @@
  * FIESTA MARKET — Servidor de pedidos (Google Apps Script + Google Sheets)
  *
  * Instalación: ver PUESTA-EN-MARCHA.md
+ * Se puede crear desde la hoja (Extensiones > Apps Script) o directo en script.google.com.
  * 1. Escribe abajo el usuario de cocina en USUARIO_INICIAL (sólo aquí, NO en GitHub).
  * 2. Ejecuta `configurar` una vez.
  * 3. Implementar > Aplicación web (Ejecutar como: Yo · Acceso: Cualquier persona).
@@ -39,7 +40,7 @@ function configurar() {
   if (!props.getProperty('USUARIO_COCINA')) throw new Error('Escribe el usuario de cocina en USUARIO_INICIAL y vuelve a ejecutar configurar.');
   if (!props.getProperty('SEQ')) props.setProperty('SEQ', '0');
   if (!props.getProperty('VERSION')) props.setProperty('VERSION', '1');
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = libro();
   ss.setSpreadsheetTimeZone(ZONA);
   const h = ss.getSheetByName(HOJA) || ss.insertSheet(HOJA, 0);
   h.getRange(1, 1, 1, COLS.length).setValues([COLS]).setFontWeight('bold').setFontColor('#FFFFFF').setBackground('#990F2D');
@@ -197,7 +198,21 @@ function leerSesiones() {
 }
 
 /* ===================== Utilidades ===================== */
-function hoja() { return SpreadsheetApp.getActiveSpreadsheet().getSheetByName(HOJA); }
+/* Funciona de dos formas:
+   a) Proyecto creado desde la hoja (Extensiones > Apps Script): usa esa hoja.
+   b) Proyecto creado en script.google.com: la primera vez crea la hoja
+      "FIESTA MARKET | Pedidos" en tu Drive y recuerda su ID. */
+function libro() {
+  const props = PropertiesService.getScriptProperties();
+  const id = props.getProperty('HOJA_ID');
+  if (id) return SpreadsheetApp.openById(id);
+  const activa = SpreadsheetApp.getActiveSpreadsheet();
+  if (activa) return activa;
+  const nueva = SpreadsheetApp.create('FIESTA MARKET | Pedidos');
+  props.setProperty('HOJA_ID', nueva.getId());
+  return nueva;
+}
+function hoja() { return libro().getSheetByName(HOJA); }
 function leer() {
   const h = hoja(), n = h.getLastRow() - 1;
   return n > 0 ? h.getRange(2, 1, n, COLS.length).getValues() : [];

@@ -27,10 +27,16 @@ function crearContexto(usuario) {
     };
   }
   const hojas = {};
-  const ss = { getSheetByName: n => hojas[n] || null, insertSheet: n => (hojas[n] = hoja(n)), setSpreadsheetTimeZone() {} };
+  const ss = { getId: () => 'hoja-123', getSheetByName: n => hojas[n] || null, insertSheet: n => (hojas[n] = hoja(n)), setSpreadsheetTimeZone() {} };
+  const independiente = process.env.GAS_INDEPENDIENTE === '1';   // simula un proyecto creado en script.google.com
+  let creada = false;
   const ctx = {
     console,
-    SpreadsheetApp: { getActiveSpreadsheet: () => ss },
+    SpreadsheetApp: {
+      getActiveSpreadsheet: () => independiente ? null : ss,
+      create: () => { creada = true; return ss; },
+      openById: id => { if (id !== 'hoja-123') throw new Error('no existe'); return ss; }
+    },
     PropertiesService: { getScriptProperties: () => ({
       getProperty: k => props.has(k) ? props.get(k) : null, setProperty: (k, v) => props.set(k, String(v)), deleteProperty: k => props.delete(k) }) },
     LockService: { getScriptLock: () => ({ tryLock: () => true, waitLock() {}, releaseLock() {} }) },
@@ -49,7 +55,7 @@ function crearContexto(usuario) {
   props.set('USUARIO_COCINA', usuario);
   vm.runInContext('configurar()', ctx);
   const post = body => JSON.parse(ctx.doPost({ postData: { contents: typeof body === 'string' ? body : JSON.stringify(body) } }).getContent());
-  return { ctx, props, hojas, post };
+  return { ctx, props, hojas, post, creada: () => creada };
 }
 
 // Servidor HTTP que se comporta como la URL /exec (CORS como Apps Script: sin preflight)

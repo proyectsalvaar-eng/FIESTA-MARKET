@@ -22,21 +22,31 @@ Cocinera (tablet) ──► /cocina (GitHub Pages) ┘       (revisa cada 10 s)
 | `build.sh` | Genera `docs/`, la carpeta que publica GitHub Pages. |
 | `tests/` | Pruebas automáticas. |
 
-## 1. Crear la hoja y el servidor (unos 10 minutos)
-Hazlo con la sesión de Google de **proyectsalvaar@gmail.com**:
+## 1. Crear el servidor de pedidos (unos 10 minutos)
+**Antes de empezar:** abre una **ventana de incógnito** (Chrome: Ctrl/Cmd + Shift + N) y entra **sólo** con proyectsalvaar@gmail.com.
+Si el navegador tiene varias cuentas de Google abiertas, Apps Script suele mostrar *"No se pudo abrir el archivo en este momento"*.
 
-1. Abre https://sheets.new y nombra la hoja **FIESTA MARKET | Pedidos**.
-2. Menú **Extensiones > Apps Script**. Borra lo que aparece y pega todo el contenido de `backend/Code.gs`.
+1. Entra a **https://script.google.com/create**. Se abre un proyecto nuevo.
+   Ponle nombre arriba a la izquierda: `FIESTA MARKET pedidos`.
+2. Borra lo que aparece y pega todo el contenido de `backend/Code.gs`.
 3. En la línea `const USUARIO_INICIAL = 'ESCRIBE_AQUI_EL_USUARIO';` cambia el texto por el usuario de cocina.
    Esto se queda en Google; no lo cambies en GitHub.
-4. Guarda. Arriba elige la función **configurar** y presiona **Ejecutar**.
-   Google pedirá permisos: *Revisar permisos > tu cuenta > Configuración avanzada > Ir a… > Permitir*.
-   El aviso de "app no verificada" es normal, porque el programa es tuyo.
+4. Guarda (ícono de disco). Arriba elige la función **configurar** y presiona **Ejecutar**.
+   - Google pedirá permisos: *Revisar permisos > tu cuenta > Configuración avanzada > Ir a FIESTA MARKET pedidos > Permitir*.
+     El aviso de "app no verificada" es normal, porque el programa es tuyo.
+   - La primera vez se crea sola la hoja **FIESTA MARKET | Pedidos** en tu Google Drive.
 5. **Implementar > Nueva implementación**. En el engrane elige **Aplicación web**:
    - Ejecutar como: **Yo**
    - Quién tiene acceso: **Cualquier persona**
 6. Presiona **Implementar** y copia la **URL de la aplicación web** (termina en `/exec`).
    Si la abres en el navegador debe mostrar `{"ok":true,...}`.
+
+> También funciona creándolo desde una hoja (**Extensiones > Apps Script**). En ese caso usa esa misma hoja.
+
+**Si aun así no abre:**
+- Desde una cuenta que ya tenía otras sesiones: cierra sesión en todas (*foto de perfil > Cerrar sesión en todas las cuentas*) y entra sólo con proyectsalvaar@gmail.com.
+- En Safari: activa las cookies de terceros o usa Chrome. El editor de Apps Script las necesita.
+- Prueba primero https://script.google.com/home. Si ahí tampoco abre, la cuenta puede tener Apps Script restringido: pasa en cuentas de menores de edad o administradas por una escuela o empresa.
 
 ## 2. Conectar el sitio
 1. Pega esa URL en `assets/fm-config.js`, en `APPS_SCRIPT_URL`.
