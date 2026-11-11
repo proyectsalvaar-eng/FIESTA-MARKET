@@ -10,7 +10,7 @@
    los pedidos se guardan sólo en el navegador (para pruebas).
    ===================================================================== */
 window.FM_CONFIG = {
-  APPS_SCRIPT_URL: "",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbx8H5xDeyQGDD_3kefG1wIU5yLtY1p8dn2v_RXy1iFD79CqtRC-aNdnyJqpISTnCqoDPA/exec",
 
   // Cada cuántos segundos el panel revisa si hay pedidos nuevos
   INTERVALO_SEGUNDOS: 10,
